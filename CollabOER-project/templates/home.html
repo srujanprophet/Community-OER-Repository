@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>HomePage</title>
+</head>
+<body>
+	<strong><h1>Log In</h1></strong>
+	<form action="{% url 'show' %}">
+		Username : <input type="text" required name="username"> <br>
+		Password : <input type="password" required name="password"><br>
+		<input type="submit" value="Log In!">
+	</form><hr>
+	<p> {{ message }} </p>
+</body> 
+</html>
