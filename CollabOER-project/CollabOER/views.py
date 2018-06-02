@@ -6,12 +6,15 @@ def homepage(request):
 	return render(request,'home.html')
 
 def login(request):
-	username = request.GET['username']
+	email = request.GET['email']
 	password = request.GET['password']
-
-	response = requests.get('http://freegeoip.net/json/')
-	geodata = response.json()
-
-	print(username, password)
+	#curl -v -X POST --data "email=admin@dspace.org&password=mypass" https://dspace.myu.edu/rest/login
+	url = 'http://127.0.0.1:80/rest/communities'
+	#params = {'email': email, 'password': password}
+	#response = requests.get('http://freegeoip.net/json/')
+	#geodata = response.json()
+	#r = requests.post(url, params=params)
+	r = requests.get(url)
+	print(r.text)
 	msg = "Successful login"
-	return render(request,'show.html',{'message':msg,'ip': geodata['ip'],'country':geodata['country_name']})
+	return render(request,'show.html',{'message':msg})
