@@ -15,6 +15,6 @@ def login(request):
 	#geodata = response.json()
 	#r = requests.post(url, params=params)
 	r = requests.get(url)
-	print(r.text)
+	temp = r[0]['name']
 	msg = "Successful login"
-	return render(request,'show.html',{'message':msg})
+	return render(request,'show.html',{'message':msg,'comm':temp})
