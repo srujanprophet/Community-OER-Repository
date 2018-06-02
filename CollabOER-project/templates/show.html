@@ -6,6 +6,9 @@
 	<body style="text-align:center; background-color: #D4B16A">
 	<em style="border: 5px dashed #D4B16A"><h1 style="cursor:pointer"> {{ message }} </h1></em>
 	<br>
-		<h3 style="color:purple">{{ comm }}</h3>
+		{% for com in comm %}
+		<h3 style="color:purple">{{ com.name }}</h3>
+		}
+		{% endfor %}
 	</body>
 </html>
