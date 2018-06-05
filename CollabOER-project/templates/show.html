@@ -2,12 +2,29 @@
 <html>
 <head>
 	<title>Result</title>
+	<script>
+  	function addlink()
+	</script>
 </head>
-	<body style="text-align:center; background-color: #D4B16A">
+
+	<body style="background-color: #D4B16A">
 	<em style="border: 5px dashed #D4B16A"><h1 style="cursor:pointer"> {{ message }} </h1></em>
 	<br>
+	<!--
+	<table align="center" style="border: 2px solid black;border-spacing: 5px;">
+	<tr>
+		<th>Community Name</th>
+		<th>Community Id</th>
+		
+	</tr>
 		{% for com in comm %}
-		<h3 style="color:purple">{{ com }}</h3>
+		
+	<tr>	
+		<td><h4 style="color:purple">{{ com.name }}</h4></td>
+		<td> {{ com.uuid }}</td>
+		<td>{{com.retrieveLink}}</td>
+	</tr>
 		{% endfor %}
+	</table>-->
 	</body>
 </html>
