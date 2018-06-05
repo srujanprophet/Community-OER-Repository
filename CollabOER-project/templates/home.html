@@ -5,11 +5,11 @@
 </head>
 <body style="text-align:center; background-color: #AA8439">
 	<strong><h1 style="background-color: #FFE3AA">Log In</h1></strong>
-	<form action="{% url 'show' %}" style="background-color: #D4B16A">
-		Email : <input type="text" required name="email"> <br>
-		Password : <input type="password" required name="password"><br>
-		<input type="submit" value="Log In!">
-	</form><hr>
+	<p style="background-color: #D4B16A">
+		Email :  <br>
+		Password : 
+		<a href="{% url 'show' %}"><button>Click Me</button></a>
+	</p><hr>
 	<p> {{ message }} </p>
 </body> 
 </html>
