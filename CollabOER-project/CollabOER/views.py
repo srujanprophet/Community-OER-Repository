@@ -38,6 +38,10 @@ def test(request):
 	"shortDescription":"Collection contains materials pertaining to the Able Family",
 	"sidebarText":"","countItems":3,"subcommunities":[],"collections":[]}
 	url = 'http://127.0.0.1:80/rest/communities'
-	r = requests.post(url,data=sample)
+
+	cookie = {'JSESSIONID': '#Add your cookie'}
+	
+	r = requests.post(url,data=sample, cookies=cookie)
+
 	return render(request,'post.html')
 
