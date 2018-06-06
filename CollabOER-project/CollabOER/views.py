@@ -36,13 +36,37 @@ def test(request):
 		"copyrightText":"",
 		"introductoryText":"Welcome to Russia",
 		"shortDescription":"Battle of the best.",
-		"sidebarText":""
+		"sidebarText":"",
 		}
 	url = 'http://127.0.0.1:80/rest/communities'
+	option = 1
+	if option == 0:
+		cookie = {'JSESSIONID': '#Add your cookie'}
 
-	cookie = {'JSESSIONID': '#Add your cookie'}
+		r = requests.post(url,data=sample, cookies=cookie)
 
-	r = requests.post(url,data=sample, cookies=cookie)
+	if option == 1:
+		cookies = {
+			'JSESSIONID': '6B98CF8648BCE57DCD99689FE77CB1B8', #Add custom cookie
+		}
+		r = requests.post(url,json=sample, cookies=cookies)
 
+	if option == 2:
+		cookies = {
+			'JSESSIONID': '6B98CF8648BCE57DCD99689FE77CB1B8', #Add custom cookie
+		}
+		headers = {
+			'Content-Type': 'application/json',
+		}
+
+		r = requests.post(url,data=sample, cookies=cookies, headers=headers)
+
+	if option == 3:
+		jar = requests.cookies.RequestsCookieJar()
+		jar.set('JSESSIONID', '6B98CF8648BCE57DCD99689FE77CB1B8', domain='127.0.0.1', path='/rest/communities')
+		r = requests.post(url, json=sample, cookies=jar)
+		print(r.text)
+
+	print(r.status_code)
 	return render(request,'post.html')
 
