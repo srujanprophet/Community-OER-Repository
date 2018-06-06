@@ -31,16 +31,17 @@ def login(request):
 	return render(request,'show.html',{'message':msg})
 
 def test(request):
-	sample = {"id":456,"name":"Reports Community","handle":"10766/10213",
-	"type":"community",	"link":"/rest/communities/456",
-	"expand":["parentCommunity","collections","subCommunities","logo","all"],
-	"logo":None,"parentCommunity":None,"copyrightText":"","introductoryText":"",
-	"shortDescription":"Collection contains materials pertaining to the Able Family",
-	"sidebarText":"","countItems":3,"subcommunities":[],"collections":[]}
+	sample = {
+		"name":"FIFA WORLD CUP",
+		"copyrightText":"",
+		"introductoryText":"Welcome to Russia",
+		"shortDescription":"Battle of the best.",
+		"sidebarText":""
+		}
 	url = 'http://127.0.0.1:80/rest/communities'
 
 	cookie = {'JSESSIONID': '#Add your cookie'}
-	
+
 	r = requests.post(url,data=sample, cookies=cookie)
 
 	return render(request,'post.html')
