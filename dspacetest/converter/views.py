@@ -1,5 +1,6 @@
 from django.views.generic import View
 from django.utils import timezone
+from django.shortcuts import render
 from .models import *
 from .render import Render
 from random import *
@@ -9,15 +10,15 @@ from decimal import Decimal
 class Pdf(View):
 
 	def get(self, request):
-		sales = Sales.objects.all()
+		articles = Articles.objects.all()
 		today = timezone.now()
 		params = {
        		'today': today,
-        	'sales': sales,
+        	'articles': articles,
     	}
 		return Render.render('pdf.html', params)
 
-class Seeder(View):
+"""class Seeder(View):
 
 	def get(self, request):
 		self.products = ["Mercurial Vapor", "Mercurial Superfly", "Hypervenom III", "Magista Obra", "Hypervenom Phantom", "Tiempo Legend"]
@@ -31,5 +32,5 @@ class Seeder(View):
 			sale = Sales(product=product, quantity=quantity)
 			sale.save()
 			params = {'msg':'Done'}
-		return Render.render('seeds.html',params)
-
+		return render(request,'seeds.html',params)
+"""

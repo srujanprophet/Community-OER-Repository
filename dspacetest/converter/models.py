@@ -2,20 +2,22 @@ from django.db import models
 #from django.contrib.auth.models import User
 
 
-class Products(models.Model):
+class Articles(models.Model):
     title = models.CharField(max_length=255)
-    price = models.DecimalField(default=0.00, max_digits=18, decimal_places=2)
+    body = models.TextField()
+    pub_date = models.DateTimeField(auto_now_add=True)
+
 
     def __str__(self):
         return self.title
 
     class Meta:
-        db_table = "tutorial_products"
-        verbose_name = "Product"
-        verbose_name_plural = "Products"
+        db_table = "test_articles"
+        verbose_name = "Article"
+        verbose_name_plural = "Articles"
 
 
-class Sales(models.Model):
+"""class Sales(models.Model):
     product = models.ForeignKey(Products, on_delete=None)
     quantity = models.IntegerField(default=0)
     price = models.DecimalField(default=0.00, max_digits=18, decimal_places=2)
@@ -33,3 +35,4 @@ class Sales(models.Model):
         db_table = "tutorial_product_sales"
         verbose_name = "Sale"
         verbose_name_plural = "Sales"
+"""

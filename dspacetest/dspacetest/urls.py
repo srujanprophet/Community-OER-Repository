@@ -20,5 +20,4 @@ from converter import views as converter_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('render/pdf/', converter_views.Pdf.as_view()),
-    path('seed/',converter_views.Seeder.as_view())
 ]

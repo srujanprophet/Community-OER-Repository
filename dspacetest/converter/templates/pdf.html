@@ -8,78 +8,38 @@
             size: A4;
             margin: 1cm;
         }
-        .table {
-            width: 100%;
-            max-width: 100%;
-            margin-bottom: 5px;
-            background-color: #fff;
+
+        body {
+            font-family: serif;
+            padding : 0px 100px;
+
         }
-        .table th,
-        .table td {
-            padding: 5px;
-            vertical-align: top;
-            border-top: 1px solid #000;
-            text-align: center;
+
+        h1 {
+            font-size: 2.5em;
         }
-        .table thead th {
-            vertical-align: bottom;
-            border-bottom: 2px solid #000;
+
+        p {
+            font-size: 1.5em;
         }
-        .table tbody + tbody {
-            border-top: 2px solid #000;
-        }
-        .table .table {
-            background-color: #fff;
-        }
-        .list-group {
-            display: block;
-            width: 100%;
-            list-style: none;
-            margin-top: 15px;
-            margin-bottom: 15px;
-        }
-        .list-group p {
-            width: 100%;
-            height: 20px;
-            line-height: 20px;
-            list-style: none;
-            font-size: 1.1em;
+
+        .date {
+            text-align: right;
+            padding-right: 100px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="card">
-        <div class="card-header">
-            <h3>Sales Report - {{ today | date:"d/m/Y" }}</h3>
-        </div>
-
-        <div class="list-group">
-            <p>Name : Srujan</p>
-        </div>
-
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Raised</th>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Price</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for sale in sales %}
-                <tr>
-                    <td>{{ sale.created_at | date:"d/m/Y" }}</td>
-                    <td>{{ sale.product.title }}</td>
-                    <td>{{ sale.quantity }}</td>
-                    <td>&pound;{{ sale.price }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    
+        {% for article in articles %}
+            
+               <h1> {{ article.title }} </h1>
+                <p class="date">{{ article.pub_date | date:"d/m/Y" }}</p><br><br>
+                <p>{{ article.body }}</p>
+                
+        {% endfor %}
 </div>
 
 </body>
