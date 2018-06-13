@@ -5,7 +5,10 @@ from django.db import models
 class Articles(models.Model):
     title = models.CharField(max_length=255)
     body = models.TextField()
-    pub_date = models.DateTimeField(auto_now_add=True)
+    author = models.CharField(max_length=50, default='000000')
+    pub_date = models.DateTimeField(auto_now_add=True, blank=True)
+    community = models.CharField(max_length=50, default='0000')
+
 
 
     def __str__(self):

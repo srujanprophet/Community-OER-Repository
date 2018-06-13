@@ -12,11 +12,13 @@ class Pdf(View):
 	def get(self, request):
 		articles = Articles.objects.all()
 		today = timezone.now()
+		print(today)
 		params = {
        		'today': today,
         	'articles': articles,
     	}
 		return Render.render('pdf.html', params)
+
 
 """class Seeder(View):
 

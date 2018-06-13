@@ -11,7 +11,7 @@
 
         body {
             font-family: serif;
-            padding : 0px 100px;
+            padding : 0px 50px;
 
         }
 
@@ -36,7 +36,9 @@
         {% for article in articles %}
             
                <h1> {{ article.title }} </h1>
-                <p class="date">{{ article.pub_date | date:"d/m/Y" }}</p><br><br>
+               <p><div style="font-size:1.9em;">Author: {{ article.author }}<br>
+               Community :  {{ article.community }}</p></div>
+                <p class="date">{{ article.pub_date | date:"d/m/Y g:i:s" }}</p><br><br>
                 <p>{{ article.body }}</p>
                 
         {% endfor %}
