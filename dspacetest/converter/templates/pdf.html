@@ -33,15 +33,14 @@
 
 <div class="container">
     
-        {% for article in articles %}
             
                <h1> {{ article.title }} </h1>
                <p><div style="font-size:1.9em;">Author: {{ article.author }}<br>
                Community :  {{ article.community }}</p></div>
                 <p class="date">{{ article.pub_date | date:"d/m/Y g:i:s" }}</p><br><br>
-                <p>{{ article.body }}</p>
+                <p>{{ article.body|linebreaks }}</p>
                 
-        {% endfor %}
+    
 </div>
 
 </body>

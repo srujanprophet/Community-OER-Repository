@@ -3,6 +3,7 @@ from django.db import models
 
 
 class Articles(models.Model):
+    article_id = models.IntegerField(default=0)
     title = models.CharField(max_length=255)
     body = models.TextField()
     author = models.CharField(max_length=50, default='000000')

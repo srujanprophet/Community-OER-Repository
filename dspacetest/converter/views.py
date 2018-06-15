@@ -12,10 +12,16 @@ class Pdf(View):
 	def get(self, request):
 		articles = Articles.objects.all()
 		today = timezone.now()
-		print(today)
+		#print(today)
+		incoming = 2
+		for art in articles:
+			if art.id == incoming:
+				article = art
+				break
+
 		params = {
        		'today': today,
-        	'articles': articles,
+        	'article': article,
     	}
 		return Render.render('pdf.html', params)
 
