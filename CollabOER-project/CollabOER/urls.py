@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from . import views
+from converter import views as converter_views
 
 urlpatterns = [
 	path('',views.homepage,name="home"),
@@ -26,5 +27,6 @@ urlpatterns = [
 	path('show4/',views.create_collection,name="create-collection"),
 	path('show5/',views.insert_item,name="add-items"),
 	path('show6/',views.insert_bitstream,name="add-bitstream"),
+	path('render/pdf/',converter_views.Pdf.as_view()),
     path('admin/', admin.site.urls),
 ]
