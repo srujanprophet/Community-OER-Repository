@@ -11,23 +11,24 @@ import requests
 class Pdf(View):
 
 	def get(self, request):
-		#articles = Articles.objects.all()
-		url = 'http://***ADD LOCALHOST HERE***/api/communityarticlesapi'  
-		articles = requests.get(url)
-		print(articles.json())
+		articles = Articles.objects.all()
+		#url = 'http://127.0.0.1:8000/api/communityarticlesapi'  
+		#articles = requests.get(url)
+		#print(articles.json())
 		today = timezone.now()
 		#print(today)
 		incoming = 1
+		i = 1
 		for art in articles:
-			if art.id == incoming:
-				article = art
-				break
-
-		params = {
-       		'today': today,
-        	'article': article,
-    	}
-		return Render.render('pdf.html', params)
+			filename = "test" + str(i) + ".pdf"
+			params = {
+	       		'today': today,
+	        	'article': art,
+	    	}
+			x = Render.render('pdf.html', params, filename)
+			i += 1
+		
+		return x
 
 
 """
