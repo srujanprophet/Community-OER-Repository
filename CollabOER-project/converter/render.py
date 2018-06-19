@@ -11,7 +11,11 @@ class Render:
         template = get_template(path)
         html = template.render(params)
         response = BytesIO()
-        result = open('test/'+filename, 'wb')
+        if os.path.isdir("communities/"+dirname):
+            result = open("communities/"+dirname+'/'+filename, 'wb')
+        else:
+            os.makedirs("communities/"+dirname)
+            result = open("communities/"+dirname+'/'+filename, 'wb')
         pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), response)
         pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
         result.close()

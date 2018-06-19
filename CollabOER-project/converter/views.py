@@ -12,14 +12,15 @@ class Pdf(View):
 
 	def get(self, request):
 		articles = Articles.objects.all()
-		#url = 'http://127.0.0.1:8000/api/communityarticlesapi'  
-		#articles = requests.get(url)
-		#print(articles.json())
+		url = 'http://127.0.0.1:8000/api/dspace/communityarticlesapi'  
+		arti = requests.get(url)
+		articles_list = arti.json()
+		print(type(articles_list[0]['created_at']))
 		today = timezone.now()
 		#print(today)
 		incoming = 1
 		i = 1
-		for art in articles:
+		"""for art in articles:
 			filename = "test" + str(i) + ".pdf"
 			params = {
 	       		'today': today,
@@ -27,7 +28,24 @@ class Pdf(View):
 	    	}
 			x = Render.render('pdf.html', params, filename)
 			i += 1
-		
+		"""
+		for article in articles_list:
+			year = article['created_at'][:4]
+			month = article['created_at'][5:7]
+			day = article['created_at'][8:10]
+			hours = article['created_at'][11:13]
+			minutes = article['created_at'][14:16]
+			seconds = article['created_at'][17:19]
+			date = day+"/"+month+"/"+year+" "+hours+":"+minutes+":"+seconds
+			filename = "temp"+str(article['articleid'])+".pdf"
+			params = {
+				'title': article['title'],
+				'body' : article['body'],
+				'created_by': article['created_by'],
+				'created_at': date,
+				'cname': article['communityname'],
+				}
+			x = Render.render('pdf.html',params, filename, article['communityname'])
 		return x
 
 
