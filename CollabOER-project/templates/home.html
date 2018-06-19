@@ -4,19 +4,71 @@
 	<title>HomePage</title>
 </head>
 <body style="text-align:center; background-color: #AA8439">
-	<strong><h1 style="background-color: #FFE3AA"></h1>DSpace APIs' Working Model</strong>
+	<strong><h1 style="background-color: #FFE3AA"></h1>Django-DSpace System</strong>
 	<p style="background-color: #D4B16A">
 		
-	
-		<a href="{% url 'login' %}"><button>Log In</button></a><br>
-		<a href="{% url 'logout' %}"><button>Log Out</button></a><br> 
-		<a href="{% url 'create-community' %}"><button>Create Community</button></a><br>
-		<a href="{% url 'create-sub-community' %}"><button>Create Sub Community</button></a><br>
+	 <table style="width:100%">
+  <tr>
+    <th>Collaboration System</th>
+    <th>DSpace</th>
+  </tr>
+  <tr>
+    <td><a href="{% url 'test_get_communities' %}"><button>Get Communities</button></a></td>
+    <td><a href="{% url 'login' %}"><button>Log In</button></a></td>
+  </tr>
+  <tr>
+    <td><a href="{% url 'get_community_resources' %}"><button>Get Resources From Communities</button></a></td>
+    <td><a href="{% url 'logout' %}"><button>Log Out</button></a></td>
+  </tr>
+  <tr>
+    <td><a href="{% url 'get_groups' %}"><button>Get Groups</button></a></td>
+    <td><a href="{% url 'create-community' %}"><button>Create Community</button></a></td>
+  </tr>
+  <tr>
+    <td><a href="{% url 'get_group_resources' %}"><button>Get Resources From Group</button></a></td>
+    <td><a href="{% url 'create-sub-community' %}"><button>Create Sub Community</button></a></td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td><a href="{% url 'test_create_collection' %}"><button>Create Collection</button></a></td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td><a href="{% url 'add-items' %}"><button>Addition of Items</button></a></td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td><a href="{% url 'add-bitstream' %}"><button>Addition of Bitstream</button></a></td>
+  </tr>
+				
+		
 
-		<a href="{% url 'create-collection' %}"><button>Create Collection</button></a><br>
-	`	<a href="{% url 'add-items' %}"><button>Addition of Items</button></a><br>
-		<a href="{% url 'add-bitstream' %}"><button>Addition of Bitstream</button></a><br>
-	</p><hr>
-	<p> {{ message }} </p>
+	</table> 
+
+	</p>
+        {% if data %}
+	<hr>  	
+		{% for community in data %}
+			{{ community.name }} || {{community.category}}<br>
+		{% endfor %}
+	{% endif %}
+
+	{% if data1 %}
+  	<hr>
+		{% for community in data1 %}
+			{{ community.title }} || {{community.cname}}<br>
+		{% endfor %}
+	{% endif %}
+
+	<hr>
+	{% if messages %}
+           <ul class="messages">
+               {% for message in messages %}
+               <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+               {% endfor %}
+           </ul>
+        {% endif %}
+	<p>{{mess}}</p>
+	<br>
 </body> 
 </html>

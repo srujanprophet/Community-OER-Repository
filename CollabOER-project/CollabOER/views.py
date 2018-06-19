@@ -1,10 +1,70 @@
 from django.shortcuts import render
+from django.contrib import messages
 
 import requests
 
 
 def homepage(request):
 	return render(request,'home.html')
+
+def test_get_communities(request):
+	r = requests.get('http://localhost:8000/communityapi/')
+	
+	data = r.json()
+	if data:	
+		print(data)
+	else: 
+		print('error')
+	
+	for name in data:
+		print(name['name'])
+		
+	if r.status_code==200:	
+		messages.success(request, 'Successfully Fetch all Communities')
+	else:
+		messages.error(request, 'Error in Fetching the Communities')	
+	return render(request,'home.html',{'data':data})
+
+def get_communities(request):
+	r = requests.get('http://localhost:8000/communityapi/')
+	
+	data = r.json()
+	print(data)
+	for name in data:
+		print(name['name'])
+		
+	if r.status_code==200:	
+		messages.success(request, 'Successfully Fetch all Communities')
+		return data
+	else:
+		messages.error(request, 'Error in Fetching the Communities')
+		return 0
+
+
+def get_community_resources(request):
+	r = requests.get('http://localhost:8000/api/communityarticlesapi/')
+	
+	data = r.json()
+	print(data)
+	for name in data:
+		print(name['title'])
+		
+	if r.status_code==200:	
+		messages.success(request, 'Successfully Fetch all Communities')
+	else:
+		messages.error(request, 'Error in Fetching the Communities')
+	return render(request,'home.html',{'data1':data})
+
+
+def get_groups(request):
+	messages.success(request, 'Successfully Fetch all Groups')
+	return render(request,'home.html')
+
+def get_group_resources(request):
+	messages.success(request, 'Successfully Fetch all Group Resources')
+	return render(request,'home.html')
+
+
 
 def login(request):
 
@@ -13,143 +73,198 @@ def login(request):
 	r = requests.post(url, data=head)
 	sessionid = r.cookies['JSESSIONID']
 	if r.status_code==200:
-		msg = "User Successfully Login to the System"
+		messages.success(request, 'User Successfully Login to the System')
+		return sessionid
 	else:
-		msg = "Error in Login"	
-	return render(request,'show.html',{'message':msg})
+		messages.error(request, 'Error in Login')
+		return 500
+
+def test_login(request):
+
+	url = 'http://127.0.0.1:80/rest/login'
+	head = {'email': 'durgeshbarwal@gmail.com', 'password': '1773298936'}	
+	r = requests.post(url, data=head)
+	sessionid = r.cookies['JSESSIONID']
+	if r.status_code==200:
+		messages.success(request, 'User Successfully Login to the System')
+	else:
+		messages.error(request, 'Error in Login')	
+	return render(request,'home.html')
+
 
 def logout(request):
-	
 	url = 'http://127.0.0.1:80/rest/logout'
 	r = requests.post(url)
 	if r.status_code==200:
-		msg = "User Successfully Logout to the System"
+		messages.success(request, 'User Successfully Logout to the System.')
+		return 1
 	else:
-		msg = "Error in Logout"	
-	return render(request,'show.html',{'message':msg})
-
+		message.error(request, 'Error in Logout')
+		return 0
 	
+def test_logout(request):
+	url = 'http://127.0.0.1:80/rest/logout'
+	r = requests.post(url)
+	if r.status_code==200:
+		messages.success(request, 'User Successfully Logout to the System.')
+	else:
+		message.error(request, 'Error in Logout')
+	
+	return render(request,'home.html')
 
 def create_community(request):
-
-	url = 'http://127.0.0.1:80/rest/login'
-	head = {'email': 'durgeshbarwal@gmail.com', 'password': '1773298936'}	
-	r = requests.post(url, data=head)
-	sessionid = r.cookies['JSESSIONID']
-	if r.status_code==200:
-		msg = "User Successfully Login to the System"
+        
+	#login
+	sessionid = login(request)
+	if sessionid == 500:
+		messages.error(request, 'Error in Login')
 	else:
-		msg = "Error in Login"	
+		messages.success(request, 'User Successfully Login to the System')	
+	#Community POST
+	
 	url = 'http://127.0.0.1:80/rest/communities'
 	head = {'Content-Type': 'application/json'}
-	data = { 
-		"name": "FIFA World Cup",
-		"copyrightText": "",
-		"introductoryText": "Welcome to the Sport Club",
-		"shortDescription": "This",
-		"sidebarText": "" 
-	}
+
 	jar = requests.cookies.RequestsCookieJar()
 	jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/communities')
 	
-	r = requests.post(url, headers=head, json=data, cookies = jar)
-	if r.status_code==200:
-		msg = "Community is Created"
-	else: 
-		msg = "Error in Community Creation"
-	return render(request,'show.html',{'message':msg})
+	k=100
+	data=get_communities(request)
+	for name in data:
+		while(k==100):
+			community={"name": name['name'],"copyrightText": "","introductoryText": "","shortDescription": name['desc'],"sidebarText": ""}
+			r = requests.post(url, headers=head, json=community, cookies = jar)
+			if r.status_code==200:
+				messages.success(request, 'Community is Created Successfully')
+				create_collection(request,name['name'],community,jar)
 
 
-def create_sub_community(request):
+        
+				k=200
+			else: 
+				k=100				
+				messages.error(request, 'Error in Community Creation')
+		k=100
+	
+	#logout
+	logout(request)
+	return render(request,'home.html')
+
+def create_collection(request, collection, community, jar):
 
 	#Getting of all Communities
 	url = 'http://127.0.0.1:80/rest/communities/top-communities'
-	head = {'Content-Type': 'application/json'}
-	r = requests.get(url, headers = head)
+	r = requests.get(url, headers = {'Content-Type': 'application/json'})
         
 	#Getting the uuid of a community
-	community_name = "Hello"
-	uuid=-1
+	community_name = collection
 	for i in r.json():
 		if community_name==i['name']:
 			uuid=i['uuid']
 			exit			
-	#login 
-	url = 'http://127.0.0.1:80/rest/login'
-	head = {'email': 'durgeshbarwal@gmail.com', 'password': '1773298936'}	
-	r = requests.post(url, data=head)
-	sessionid = r.cookies['JSESSIONID']
-	if r.status_code==200:
-		msg = "User Successfully Login to the System"
-	else:
-		msg = "Error in Login"	
-	
-	#Creation of Sub Community
-	url = 'http://127.0.0.1:80/rest/communities/' + uuid + '/communities'
-	head = {'Content-Type': 'application/json'}
-	data = { 
-		"name": "FIFA World Cup",
-		"copyrightText": "",
-		"introductoryText": "Welcome to the Sport Club",
-		"shortDescription": "This",
-		"sidebarText": "" 
-	}
-	jar = requests.cookies.RequestsCookieJar()
-	jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/communities')
-	
-	r = requests.post(url, headers=head, json=data, cookies = jar)
-	if r.status_code==200:
-		msg = "Sub-Community is Created"
-	else: 
-		msg = "Error in Sub- Community Creation"
-		
-	return render(request,'show.html',{'message':msg})
-
-
-def create_collection(request):
-
-	#Getting of all Communities
-	url = 'http://127.0.0.1:80/rest/communities/top-communities'
-	head = {'Content-Type': 'application/json'}
-	r = requests.get(url, headers = head)
-        
-	#Getting the uuid of a community
-	community_name = "Hello"
-	uuid=-1
-	for i in r.json():
-		if community_name==i['name']:
-			uuid=i['uuid']
-			exit			
-	#login 
-	url = 'http://127.0.0.1:80/rest/login'
-	head = {'email': 'durgeshbarwal@gmail.com', 'password': '1773298936'}	
-	r = requests.post(url, data=head)
-	sessionid = r.cookies['JSESSIONID']
-	if r.status_code==200:
-		msg = "User Successfully Login to the System"
-	else:
-		msg = "Error in Login"	
 	
 	#Creation of Sub Community
 	url = 'http://127.0.0.1:80/rest/communities/' + uuid + '/collections'
 	head = {'Content-Type': 'application/json'}
-	data = { 
+		
+	r = requests.post(url, headers=head, json=community, cookies = jar)
+	if r.status_code==200:
+		messages.success(request, 'Collection is Created Successfully')
+	else: 
+		messages.error(request, 'Error in Collection Creation')
+
+
+
+def test_create_collection(request):
+
+	#Getting of all Communities
+	url = 'http://127.0.0.1:80/rest/communities/top-communities'
+	head = {'Content-Type': 'application/json'}
+	r = requests.get(url, headers = head)
+        
+	#Getting the uuid of a community
+	community_name = "Hello"
+	uuid=0
+	for i in r.json():
+		if community_name==i['name']:
+			uuid=i['uuid']
+			exit			
+	#login
+	sessionid = test_login(request)
+	if sessionid == 500:
+		messages.error(request, 'Error in Login')
+	else:
+		messages.success(request, 'User Successfully Login to the System')	
+	
+	#Creation of Sub Community
+	if uuid!=0:
+		url = 'http://127.0.0.1:80/rest/communities/' + uuid + '/collections'
+		head = {'Content-Type': 'application/json'}
+		data = { 
 		"name": "A Collection",
 		"copyrightText": "",
 		"introductoryText": "Welcome to the Sport Club",
 		"shortDescription": "This",
-		"sidebarText": "" 
-	}
-	jar = requests.cookies.RequestsCookieJar()
-	jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/communities')
+		"sidebarText": ""}
+		jar = requests.cookies.RequestsCookieJar()
+		jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/communities')
 	
-	r = requests.post(url, headers=head, json=data, cookies = jar)
-	if r.status_code==200:
-		msg = "Collection is Created"
-	else: 
-		msg ="Error in Collection Creation"
-		
-	return render(request,'show.html',{'message':msg})
+		r = requests.post(url, headers=head, json=data, cookies = jar)
+		if r.status_code==200:
+			messages.success(request, 'Collection is Created Successfully')
+		else: 
+			messages.error(request, 'Error in Collection Creation')
+	else:
+		messages.error(request,'Top Level Community Not Found')
+	#logout
+	logout(request)
+	return render(request,'home.html')
+
+
+
+def create_sub_community(request):
+	#Getting of all Communities
+	url = 'http://127.0.0.1:80/rest/communities/top-communities'
+	head = {'Content-Type': 'application/json'}
+	r = requests.get(url, headers = head)
+        
+	#Getting the uuid of a community
+	community_name = "Hello"
+	uuid=0
+	for i in r.json():
+		if community_name==i['name']:
+			uuid=i['uuid']
+			exit			
+
+	#login
+	sessionid = login(request)
+	if sessionid == 500:
+		messages.error(request, 'Error in Login')
+	else:
+		messages.success(request, 'User Successfully Login to the System')	
+
+	#Creation of Sub Community
+	if uuid != 0:	
+		url = 'http://127.0.0.1:80/rest/communities/' + uuid + '/communities'
+		head = {'Content-Type': 'application/json'}
+		jar = requests.cookies.RequestsCookieJar()
+		jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/communities')
+		r = requests.post(url, headers=head, json={ 
+		"name": "FIFA World Cup",
+		"copyrightText": "",
+		"introductoryText": "Welcome to the Sport Club",
+		"shortDescription": "This",
+		"sidebarText": ""}, cookies = jar)
+		if r.status_code==200:
+			messages.success(request, 'Sub-Community is Created Successfully')
+		else: 
+			messages.error(request, 'Error in Sub-Community Creation')
+	else:
+		messages.error(request, 'Top Level Community Not Found')
+	
+	#logout	
+	logout(request)
+	return render(request,'home.html')
 
 
 def insert_item(request):
@@ -161,21 +276,17 @@ def insert_item(request):
         
 	#Getting the uuid of a collection
 	collection_name = "A Collection"
-	uuid=-1
+	uuid=0
 	for i in r.json():
 		if collection_name==i['name']:
 			uuid=i['uuid']
 			exit			
-	#login 
-	url = 'http://127.0.0.1:80/rest/login'
-	head = {'email': 'durgeshbarwal@gmail.com', 'password': '1773298936'}	
-	r = requests.post(url, data=head)
-	sessionid = r.cookies['JSESSIONID']
-	if r.status_code==200:
-		msg = "User Successfully Login to the System"
+	#login
+	sessionid = test_login(request)
+	if sessionid == 500:
+		messages.error(request, 'Error in Login')
 	else:
-		msg = "Error in Login"	
-	
+		messages.success(request, 'User Successfully Login to the System')	
 	#Addition of an item in a collection
 	url = 'http://127.0.0.1:80/rest/collections/' + uuid + '/items'
 	head = {'Content-Type': 'application/json'}
@@ -214,20 +325,16 @@ def insert_item(request):
 	}
 	jar = requests.cookies.RequestsCookieJar()
 	jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/collections')
-	
 	r = requests.post(url, headers=head, json=item, cookies = jar)
 	if r.status_code==200:
-		msg = "Item is Inserted"
+		messages.success(request, 'Item is Created Successfully')
 	else: 
-		msg = "Error in Item Insertion"
-		
-	return render(request,'show.html',{'message':msg})
+		messages.error(request, 'Error in Item Creation')	
+	#logout
+	logout(request)		
+	return render(request,'home.html')
 
-
-
-def insert_bitstream(request):
-
-	
+def insert_bitstream(request):	
 	#Getting of all Items
 	url = 'http://127.0.0.1:80/rest/items'
 	head = {'Content-Type': 'application/json'}
@@ -241,16 +348,14 @@ def insert_bitstream(request):
 		if item_name==i['name']:
 			uuid=i['uuid']
 			exit			
-	#login 
-	url = 'http://127.0.0.1:80/rest/login'
-	head = {'email': 'durgeshbarwal@gmail.com', 'password': '1773298936'}	
-	r = requests.post(url, data=head)
-	sessionid = r.cookies['JSESSIONID']
-	if r.status_code==200:
-		msg = "User Successfully Login to the System"
+
+	#login
+	sessionid = test_login(request)
+	if sessionid == 500:
+		messages.error(request, 'Error in Login')
 	else:
-		msg = "Error in Login"	
-	
+		messages.success(request, 'User Successfully Login to the System')	
+
 	#Addition of an Bitstream in a item
 	url = 'http://127.0.0.1:80/rest/items/' + uuid + '/bitstreams'
 	head = {'Content-Type': 'application/json'}
@@ -263,10 +368,12 @@ def insert_bitstream(request):
 	r = requests.post(url, files=files, headers=head, params=data, cookies = jar)
 	print(r.url)	
 	if r.status_code==200:
-		msg = "File is Inserted"
+		messages.success(request, 'File is Inserted Successfully')
 	else: 
-		msg = "Error in Item Insertion" + ": Error Code " + r.status_code
-		
-	return render(request,'show.html',{'message':msg})
+		messages.error(request, 'Error in File Insertion Creation')
+	
+	#logout
+	logout(request)		
+	return render(request,'home.html')
 
 
