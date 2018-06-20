@@ -11,12 +11,11 @@ import requests
 class Pdf(View):
 
 	def get(self, request):
-		articles = Articles.objects.all()
+		#articles = Articles.objects.all()
 		url = 'http://127.0.0.1:8000/api/dspace/communityarticlesapi'  
 		arti = requests.get(url)
 		articles_list = arti.json()
-		print(type(articles_list[0]['created_at']))
-		today = timezone.now()
+		#today = timezone.now()
 		#print(today)
 		incoming = 1
 		i = 1

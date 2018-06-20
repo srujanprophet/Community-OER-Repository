@@ -4,7 +4,16 @@ import requests
 
 
 def homepage(request):
-	return render(request,'home.html')
+	return render(request,'index.html')
+
+def ccDashboard(request):
+	return render(request,'CC.html')
+
+def dspaceDashboard(request):
+	return render(request, 'dspace.html')
+
+def logindash(request):
+	return render(request, 'login.html')
 
 def login(request):
 

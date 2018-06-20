@@ -7,7 +7,7 @@ import xhtml2pdf.pisa as pisa
 class Render:
 
     @staticmethod
-    def render(path: str, params: dict, filename):
+    def render(path: str, params: dict, filename, dirname):
         template = get_template(path)
         html = template.render(params)
         response = BytesIO()
