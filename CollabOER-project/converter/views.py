@@ -15,19 +15,12 @@ class Pdf(View):
 		url = 'http://127.0.0.1:8000/api/dspace/communityarticlesapi'  
 		arti = requests.get(url)
 		articles_list = arti.json()
+		x = render(request,'index.html')
 		#today = timezone.now()
 		#print(today)
 		incoming = 1
 		i = 1
-		"""for art in articles:
-			filename = "test" + str(i) + ".pdf"
-			params = {
-	       		'today': today,
-	        	'article': art,
-	    	}
-			x = Render.render('pdf.html', params, filename)
-			i += 1
-		"""
+		
 		for article in articles_list:
 			year = article['created_at'][:4]
 			month = article['created_at'][5:7]
