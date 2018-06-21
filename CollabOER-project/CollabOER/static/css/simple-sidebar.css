@@ -130,8 +130,12 @@ body {
 }
 
 #menu-toggle {
-  margin-top: 350px;
-  margin-right: 1300px;
+  position: relative;
+  margin-top: 13em;
+}
+
+.btn {
+  width: 40%;
 }
 
 

@@ -16,9 +16,6 @@ class Pdf(View):
 		arti = requests.get(url)
 		articles_list = arti.json()
 		x = render(request,'index.html')
-		#today = timezone.now()
-		#print(today)
-		incoming = 1
 		i = 1
 		
 		for article in articles_list:
