@@ -26,8 +26,8 @@
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
                 <li class="sidebar-brand">
-                    <a href="">
-                        DSpaceX
+                    <a style="background: rgba(255, 255, 255, 0.2); color: #fff;" href="{% url 'home' %}">
+                        <strong>DSpaceX</strong>
                     </a>
                 </li>
                 <li>
@@ -51,10 +51,10 @@
 
         <!-- Page Content -->
         <div id="page-content-wrapper">
-            <div class="container-fluid">
+            <div class="container-fluid" style="margin-top: 150px">
                 <h1>DSpaceX</h1>
-                <p>This app fetches communities, community articles, groups, group articles form Collaborative Communities and stores the articles under their respective communities/groups.</p>
-                <a href="#menu-toggle" class="btn btn-secondary" id="menu-toggle">Toggle Menu</a>
+                <h5>This app fetches communities, community articles, groups, group articles form Collaborative Communities and stores the articles under their respective communities/groups in DSpace.</h5>
+                <a href="#menu-toggle" id="menu-toggle" class="btn btn-dark btn-lg" >Menu</a>
             </div>
         </div>
         <!-- /#page-content-wrapper -->
@@ -68,7 +68,7 @@
 
     <!-- Menu Toggle Script -->
     <script>
-    $("#menu-toggle").click(function(e) {
+    $("#menu-toggle").mouseover(function(e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });

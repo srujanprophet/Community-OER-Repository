@@ -20,6 +20,7 @@ from converter import views as converter_views
 
 urlpatterns = [
 	path('',views.homepage,name="home"),
+	path('login/',views.login, name="login"),
 	path('logindash/',views.logindash,name="logindashboard"),
 	path('CC/',views.ccDashboard,name="ccdashboard"),
 	path('dspace/',views.dspaceDashboard, name="dspacedashboard"),

@@ -26,12 +26,12 @@
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
                 <li class="sidebar-brand">
-                    <a href="">
+                    <a href="{% url 'home' %}">
                         DSpaceX
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'ccdashboard' %}">CC Dashboard</a>
+                    <a style="background: rgba(255, 255, 255, 0.2); color: #fff;" href="{% url 'ccdashboard' %}">CC Dashboard</a>
                 </li>
                 <li>
                     <a href="{% url 'dspacedashboard' %}">DSpace Dashboard</a>
@@ -58,7 +58,7 @@
                 <a href="{% url 'convert' %}"><button type="button" class="btn btn-outline-secondary">Fetch Community Articles</button></a><br>
                 <a href="{% url 'convert' %}"><button type="button" class="btn btn-outline-secondary">Fetch Groups</button></a><br>
                 <a href="{% url 'convert' %}"><button type="button" class="btn btn-outline-secondary">Fetch Group Articles</button></a><br>
-                <a href="#menu-toggle" class="btn btn-danger" id="menu-toggle">Toggle Menu</a>
+                <a style="margin-top: 290px;"href="#menu-toggle" id="menu-toggle" class="btn btn-danger btn-lg" >Menu</a>
             </div>
         </div>
         <!-- /#page-content-wrapper -->
@@ -72,7 +72,7 @@
 
     <!-- Menu Toggle Script -->
     <script>
-    $("#menu-toggle").click(function(e) {
+    $("#menu-toggle").mouseover(function(e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });
