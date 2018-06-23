@@ -25,9 +25,6 @@ def logindash(request):
 def get_communities(request):
 	r = requests.get('http://localhost:8000/api/dspace/communityapi/')
 	data = r.json()	
-	names = []
-	for item in data:
-		names.append(item['name'])
 
 	if (r.status_code==200 and data):	
 		message = 'Successfully Fetched all Communities from Collaboration System'
@@ -43,9 +40,6 @@ def get_communities(request):
 def get_community_articles(request):
 	r = requests.get('http://localhost:8000/api/dspace/communityarticlesapi/')
 	data = r.json()
-	names = []
-	for item in data:
-		names.append(item['title'])
 
 	if (r.status_code==200 and data):	
 		message = 'Successfully Fetched all Resources of Communities from Collaboration System'
@@ -65,9 +59,6 @@ def get_community_articles(request):
 def get_groups(request):
 	r = requests.get('http://localhost:8000/api/dspace/groupapi/')	
 	data = r.json()
-	names = []
-	for item in data:
-		names.append(item['name'])
 
 	if (r.status_code==200  and data):	
 		message = 'Successfully Fetched all Groups of Communities from Collaboration System'
@@ -84,9 +75,6 @@ def get_groups(request):
 def get_group_articles(request):
 	r = requests.get('http://localhost:8000/api/dspace/grouparticlesapi/')	
 	data = r.json()
-	names = []
-	for item in data:
-		names.append(item['title'])
 
 	if (r.status_code==200 and data):	
 		message = 'Successfully Fetched all Resources of Group from Collaboration System'
@@ -140,7 +128,7 @@ def create_collection(request, collection, community, jar, k):
 	#Getting the uuid of a community
 	community_name = collection
 	for i in r.json():
-		if community_name==i['name']:
+		if community_name and i['name']:
 			uuid=i['uuid']
 			exit			
 	
