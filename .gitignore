@@ -19,7 +19,7 @@ media
 # <django-project-name>/staticfiles/
 
 /requests
-/venv
+
 /dspacetest
 
 # End of https://www.gitignore.io/api/django
