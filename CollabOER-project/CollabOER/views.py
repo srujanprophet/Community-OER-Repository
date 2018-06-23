@@ -27,17 +27,18 @@ def get_communities(request):
 	data = r.json()	
 	names = []
 	for item in data:
-		name.append(item['name'])
+		names.append(item['name'])
 
 	if (r.status_code==200 and data):	
 		message = 'Successfully Fetched all Communities from Collaboration System'
+		return data
 	elif r.status_code==200:
 		message =  'No Communities to Fetch from Collaboration System Today'
+		return 0
 	else:
 		message = 'Error in Fetching the Communities from Collaboration System'
+		return 0
 	
-	params = {'data':names , 'msg': message}
-	return render(request,'ccredirect.html',params)
 
 def get_community_articles(request):
 	r = requests.get('http://localhost:8000/api/dspace/communityarticlesapi/')
@@ -48,13 +49,16 @@ def get_community_articles(request):
 
 	if (r.status_code==200 and data):	
 		message = 'Successfully Fetched all Resources of Communities from Collaboration System'
+		return data
 	elif r.status_code==200:
 		message = 'No Resources to Fetch from Collaboration System'
+		return 0
 	else: 		
 		message = 'Error in Fetching the Resources of Communities from Collaboration System'
+		return 0
 	
-	params = {'data': names, 'msg': message}
-	return render(request,'ccredirect.html',params)
+	#params = {'data': names, 'msg': message}
+	#return render(request,'ccredirect.html',params)
 
 
 
@@ -67,12 +71,15 @@ def get_groups(request):
 
 	if (r.status_code==200  and data):	
 		message = 'Successfully Fetched all Groups of Communities from Collaboration System'
+		return data
 	elif r.status_code==200:
 		message = 'No Groups to Fetch from Collaboration System'
+		return 0
 	else:
 		message = 'Error in Fetching Groups of Communities from Collaboration System'
-	params = {'data': names, 'msg': message }
-	return render(request,'ccredirect.html', params)
+		return 0
+	#params = {'data': names, 'msg': message }
+	#return render(request,'ccredirect.html', params)
 
 def get_group_articles(request):
 	r = requests.get('http://localhost:8000/api/dspace/grouparticlesapi/')	
@@ -83,13 +90,16 @@ def get_group_articles(request):
 
 	if (r.status_code==200 and data):	
 		message = 'Successfully Fetched all Resources of Group from Collaboration System'
+		return data
 	elif r.status_code==200:
 		message = 'No Resources of Group to Fetch from Collaboration System'
+		return 0
 	else:
 		message = 'Error in Fetching Groups Resources of Group from Collaboration System'
+		return 0
 	
-	params = {'data': names, 'msg': message }
-	return render(request,'ccredirect.html', params)
+	#params = {'data': names, 'msg': message }
+	#return render(request,'ccredirect.html', params)
 
 
 ################### AUTHENTICATION #######################
@@ -104,19 +114,18 @@ def login(request):
 		message = 'User Successfully Logged in to the DSpace System'
 	else:
 		message = 'Error in Login to DSpace System'
-	params = {'msg': message }
-	return render(request,'loginredirect.html', params)
-
+		return 500
+	return sessionid
 	
 def logout(request):
 	url = 'http://127.0.0.1:80/rest/logout'
 	r = requests.post(url)
 	if r.status_code==200:
 		message = 'User Successfully Logged out from the DSpace System.'
+		return 1
 	else:
 		message = 'Error in Logout from DSpace System'
-	params = {'msg': message }
-	return render(request,'loginredirect.html', params)
+		return 0
 
 ############### DSPACE DASHBOARD ###########################
 
@@ -151,6 +160,9 @@ def create_collection(request, collection, community, jar, k):
 def create_community(request):        
 	#login funcion calling
 	sessionid = login(request)
+	names = []
+	message = 'Communities Created : \n'
+
 	if sessionid != 500:
 		#User Successfully Login to the System
 		#Community POST
@@ -160,29 +172,42 @@ def create_community(request):
 		jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/communities')
 		k=100
 		#Getting all the Communities from CC
-		data=get_communities(request)
-		if data!=0:
+		data = get_communities(request)
+
+		if data != 0:
+			for item in data:
+				names.append(item['name'])
+
 			for name in data:
 				while(k==100):
 					community={"name": name['name'],"copyrightText": "","introductoryText": "","shortDescription": name['desc'],"sidebarText": ""}
 					r = requests.post(url, headers=head, json=community, cookies = jar)
 					if r.status_code==200:
-						message = 'Community is Created Successfully'
+						message += 'Community is Created Successfully in DSpace'
 						create_collection(request,name['name'],community,jar,0)        
 						k=200
 					else: 
 						k=100				
 						message = 'Error in Community Creation'
 				k=100			
-		#logout
-		logout(request)
-	params = {'msg': message }
-	return render(request,'home.html', params)
+			#logout
+			logout(request)
+
+		else:
+			message = 'No new communities were created yesterday.'
+
+	params = {'msg': message, 'data': names }
+	return render(request,'page2.html', params)
 
 
 def create_groups(request):
-	data=get_groups(request)
+	data = get_groups(request)
+	message = 'Groups Created : \n'
+	names = []
+	
 	if data!=0:
+		for item in data:
+			names.append(item['name'])
 		#login funcion calling
 		sessionid = login(request)
 		if sessionid != 500:
@@ -203,20 +228,29 @@ def create_groups(request):
 					content={ "name": group['name'], "copyrightText": "", "introductoryText": "Welcome to the Sport Club", "shortDescription": "This", "sidebarText": ""}
 					r = requests.post(url, headers={'Content-Type': 'application/json'}, json = content, cookies = jar)				#*********
 					if r.status_code==200:
-						message = 'Group is Created in DSpace'
+						message += 'Group is Created in DSpace'
 						#**************
 						create_collection(request,group['name'],content,jar,1)
 					else: 
 						message = 'Error in Group Creation in DSpace'
-		if sessionid!=500:
+		if sessionid != 500:
 			#logout
-			logout(request)		
-	params = {'msg': message }
-	return render(request,'home.html', params)
+			logout(request)
+
+	else:
+		message = 'No new groups were created yesterday'
+	
+	params = {'msg': message , 'data': names}
+	return render(request,'page3.html', params)
 
 def create_community_resources(request):
-	data=get_community_resources(request)
+	data = get_community_articles(request)
+	names = []
+	message = 'Community Articles Created : \n'
+	
 	if data!=0: 
+		for item in data:
+			names.append(item['title'])
 		#login funcion calling
 		sessionid = login(request)
 		if sessionid != 500:
@@ -234,44 +268,53 @@ def create_community_resources(request):
 				if uuid != 0:	
 					url = 'http://127.0.0.1:80/rest/collections/' + uuid + '/items'
 					item = {"metadata":[
-			{
-			"key": "dc.contributor.author",
-			"value": name['created_by']
-			},
-			{
-			"key": "dc.title",
-			"language": "pt_BR",
-			"value": name['title']
-			},
-			{
-			"key": "dc.date.issued",
-			"value": name['published_on'],
-			"language": "en_US"
-			},
-			{
-			"key": "dc.publisher",
-			"value": "Collaboration System",
-			"language": "en_US"
-			}]}
+							{
+							"key": "dc.contributor.author",
+							"value": name['created_by']
+							},
+							{
+							"key": "dc.title",
+							"language": "pt_BR",
+							"value": name['title']
+							},
+							{
+							"key": "dc.date.issued",
+							"value": name['published_on'],
+							"language": "en_US"
+							},
+							{
+							"key": "dc.publisher",
+							"value": "Collaboration System",
+							"language": "en_US"
+							}]}
 					jar = requests.cookies.RequestsCookieJar()
 					jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/collections')
 					r = requests.post(url, headers={'Content-Type': 'application/json'}, json=item, cookies = jar)
 					if r.status_code==200:
-						message = 'Item is Created Successfully in DSpace'
+						message += 'Item is Created Successfully in DSpace'
 						create_bitstream(request, name['title'], name, sessionid)
 					else: 
 						message = 'Error in Item and File POSTing to DSpace'
 		if sessionid!=500:
 			#logout
-			logout(request)		
-	params = {'msg': message }
-	return render(request,'home.html', params)
+			logout(request)
+
+	else:
+		msg = 'No new Community Articles were created yesterday'	
+	
+	params = {'msg': message, 'data': names }
+	return render(request,'page4.html', params)
 
 
 
-def create_groups_resources(request):
-	data=get_groups_resources(request)
+def create_group_resources(request):
+	data = get_group_articles(request)
+	message = 'Group Articles Created : \n'
+	names = []
+	
 	if data!=0: 
+		for item in data:
+			names.append(item['title'])
 		#login funcion calling
 		sessionid = login(request)
 		if sessionid != 500:
@@ -289,38 +332,42 @@ def create_groups_resources(request):
 				if uuid != 0:	
 					url = 'http://127.0.0.1:80/rest/collections/' + uuid + '/items'
 					item = {"metadata":[
-			{
-			"key": "dc.contributor.author",
-			"value": name['created_by']
-			},
-			{
-			"key": "dc.title",
-			"language": "pt_BR",
-			"value": name['title']
-			},
-			{
-			"key": "dc.date.issued",
-			"value": name['published_on'],
-			"language": "en_US"
-			},
-			{
-			"key": "dc.publisher",
-			"value": "Collaboration System",
-			"language": "en_US"
-			}]}
+							{
+							"key": "dc.contributor.author",
+							"value": name['created_by']
+							},
+							{
+							"key": "dc.title",
+							"language": "pt_BR",
+							"value": name['title']
+							},
+							{
+							"key": "dc.date.issued",
+							"value": name['published_on'],
+							"language": "en_US"
+							},
+							{
+							"key": "dc.publisher",
+							"value": "Collaboration System",
+							"language": "en_US"
+							}]}
 					jar = requests.cookies.RequestsCookieJar()
 					jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/collections')
 					r = requests.post(url, headers={'Content-Type': 'application/json'}, json=item, cookies = jar)
 					if r.status_code==200:
-						message = 'Item is Created Successfully in DSpace'
+						message += 'Item is Created Successfully in DSpace'
 						create_group_bitstream(request, name['title'], name, sessionid)
 					else: 
-						message = 'Error in Item and File POSTing to DSpace'
+						message += 'Error in Item and File POSTing to DSpace'
 		if sessionid!=500:
 			#logout
-			logout(request)		
-	params = {'msg': message }
-	return render(request,'home.html', params)
+			logout(request)	
+	else:
+		msg = 'No New Group Articles were published yesterday.'
+
+
+	params = {'msg': message, 'data': names }
+	return render(request,'epilogue.html', params)
 
 
 def create_group_bitstream(request, title, name, sessionid):	
@@ -403,14 +450,14 @@ def create_bitstream(request, title, name, sessionid):
 
 def getpdf(request, name):
 		
-		filename = "temp"+str(name['articleid'])+".pdf"
-		params = {
-			'title': name['title'],
-			'body' : name['body'],
-			'created_by': name['created_by'],
-			'cname': name['communityname'],
-			'published_on' : name['published_on']
-			}
-	
-		x = Render.render('pdf.html',params, filename, name['communityname'])
-		return x
+	filename = "temp"+str(name['articleid'])+".pdf"
+	params = {
+		'title': name['title'],
+		'body' : name['body'],
+		'created_by': name['created_by'],
+		'cname': name['communityname'],
+		'published_on' : name['published_on']
+		}
+
+	x = Render.render('pdf.html',params, filename, name['communityname'])
+	return x

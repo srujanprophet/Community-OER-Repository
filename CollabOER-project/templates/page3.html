@@ -52,9 +52,11 @@
         <!-- Page Content -->
         <div id="page-content-wrapper">
             <div class="container-fluid" style="margin-top: 150px">
-                <h1>DSpaceX</h1>
-                <h5>This app fetches communities, community articles, groups, group articles form Collaborative Communities and stores the articles under their respective communities/groups in DSpace.</h5>
-                <a style="margin-top: 4em;" href="{% url 'createCommunity' %}" class="btn btn-dark btn-lg">Check for Communities</a>
+                <h1>{{ msg }}</h1>
+                {% for name in data %}
+                    <p><strong>{{ name }}</h5><p></strong>
+                {% endfor %}
+                <hr><a href="{% url 'createGroupArticle' %}" class="btn btn-dark btn-lg">Check for Group Articles</a><br><br>
                 <!--<a href="#menu-toggle" id="menu-toggle" class="btn btn-dark btn-lg" >Menu</a>-->
             </div>
         </div>
