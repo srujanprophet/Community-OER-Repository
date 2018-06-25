@@ -381,7 +381,7 @@ def create_group_bitstream(request, title, name, sessionid):
 	jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/items')
 				
 	temp = get_grouparticle_pdf(request, name)
-	files = {'file': open('cache/group'+ str(name['articleid']) +'.pdf', 'rb')}
+	files = {'file': open('cache/community'+ str(name['articleid']) +'.pdf', 'rb')}
 	
 	req = requests.post(url, files=files, headers={'Content-Type': 'application/json'}, params=data, cookies = jar)
 	if req.status_code==200:
@@ -427,7 +427,7 @@ def create_bitstream(request, title, name, sessionid):
 	jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/items')
 				
 	temp = getpdf(request, name)
-	files = {'file': open('cache/temp'+ str(name['articleid']) +'.pdf', 'rb')}
+	files = {'file': open('cache/group'+ str(name['articleid']) +'.pdf', 'rb')}
 	
 	req = requests.post(url, files=files, headers={'Content-Type': 'application/json'}, params=data, cookies = jar)
 	if req.status_code==200:
