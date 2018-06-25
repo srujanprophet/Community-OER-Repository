@@ -214,8 +214,8 @@ def create_groups(request):
 					jar = requests.cookies.RequestsCookieJar()
 					jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/communities')
 					content={ "name": group['name'], "copyrightText": "", "introductoryText": "Welcome to the Sport Club", "shortDescription": "This", "sidebarText": ""}
-					r = requests.post(url, headers={'Content-Type': 'application/json'}, json = content, cookies = jar)				#*********
-					if r.status_code==200:
+					req = requests.post(url, headers={'Content-Type': 'application/json'}, json = content, cookies = jar)				#*********
+					if req.status_code==200:
 						message += 'Group is Created in DSpace'
 						#**************
 						create_collection(request,group['name'],content,jar,1)
@@ -277,8 +277,8 @@ def create_community_resources(request):
 							}]}
 					jar = requests.cookies.RequestsCookieJar()
 					jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/collections')
-					r = requests.post(url, headers={'Content-Type': 'application/json'}, json=item, cookies = jar)
-					if r.status_code==200:
+					req = requests.post(url, headers={'Content-Type': 'application/json'}, json=item, cookies = jar)
+					if req.status_code==200:
 						message += 'Item is Created Successfully in DSpace'
 						create_bitstream(request, name['title'], name, sessionid)
 					else: 
@@ -341,8 +341,8 @@ def create_group_resources(request):
 							}]}
 					jar = requests.cookies.RequestsCookieJar()
 					jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/collections')
-					r = requests.post(url, headers={'Content-Type': 'application/json'}, json=item, cookies = jar)
-					if r.status_code==200:
+					req = requests.post(url, headers={'Content-Type': 'application/json'}, json=item, cookies = jar)
+					if req.status_code==200:
 						message += 'Item is Created Successfully in DSpace'
 						create_group_bitstream(request, name['title'], name, sessionid)
 					else: 
@@ -383,8 +383,8 @@ def create_group_bitstream(request, title, name, sessionid):
 	temp = get_grouparticle_pdf(request, name)
 	files = {'file': open('Files/group'+ str(name['articleid']) +'.pdf', 'rb')}
 	
-	r = requests.post(url, files=files, headers={'Content-Type': 'application/json'}, params=data, cookies = jar)
-	if r.status_code==200:
+	req = requests.post(url, files=files, headers={'Content-Type': 'application/json'}, params=data, cookies = jar)
+	if req.status_code==200:
 		message = 'File is Inserted Successfully'
 	else: 
 		message = 'Error in File Insertion Creation'
@@ -429,8 +429,8 @@ def create_bitstream(request, title, name, sessionid):
 	temp = getpdf(request, name)
 	files = {'file': open('communities/temp'+ str(name['articleid']) +'.pdf', 'rb')}
 	
-	r = requests.post(url, files=files, headers={'Content-Type': 'application/json'}, params=data, cookies = jar)
-	if r.status_code==200:
+	req = requests.post(url, files=files, headers={'Content-Type': 'application/json'}, params=data, cookies = jar)
+	if req.status_code==200:
 		message = 'File is Inserted Successfully'
 	else: 
 		message = 'Error in File Insertion Creation'
