@@ -20,9 +20,9 @@ from converter import views as converter_views
 
 urlpatterns = [
 	path('',views.homepage,name="home"),
-	path('logindash/',views.logindash,name="logindashboard"),
-	path('CC/',views.ccDashboard,name="ccdashboard"),
-	path('dspace/',views.dspaceDashboard, name="dspacedashboard"),
+	#path('logindash/',views.logindash,name="logindashboard"),
+	#path('CC/',views.ccDashboard,name="ccdashboard"),
+	#path('dspace/',views.dspaceDashboard, name="dspacedashboard"),
 
 	#path('getcommunity/',views.get_communities, name="getCommunity"),
 	#path('getcommunityarticles/',views.get_community_articles, name="getCommunityArticles"),

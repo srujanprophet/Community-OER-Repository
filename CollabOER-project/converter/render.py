@@ -8,15 +8,15 @@ import os
 class Render:
 
     @staticmethod
-    def render(path: str, params: dict, filename, dirname):
+    def render(path: str, params: dict, filename, dirname=None):
         template = get_template(path)
         html = template.render(params)
         response = BytesIO()
-        if os.path.isdir("communities/"+dirname):
-            result = open("communities/"+dirname+'/'+filename, 'wb')
+        if os.path.isdir("cache/"):
+            result = open("cache/"+'/'+filename, 'wb')
         else:
-            os.makedirs("communities/"+dirname)
-            result = open("communities/"+dirname+'/'+filename, 'wb')
+            os.makedirs("cache/")
+            result = open("cache/"+'/'+filename, 'wb')
         pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), response)
         pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
         result.close()
