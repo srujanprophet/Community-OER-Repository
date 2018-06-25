@@ -10,7 +10,7 @@ import requests
 
 def homepage(request):
 	return render(request,'index.html')
-
+"""
 def ccDashboard(request):
 	return render(request,'CC.html')
 
@@ -19,7 +19,7 @@ def dspaceDashboard(request):
 
 def logindash(request):
 	return render(request, 'login.html')
-
+"""
 ############# CC DASHBOARD ###############
 
 def get_communities(request):
@@ -185,7 +185,7 @@ def create_community(request):
 			message = 'No new communities were created yesterday.'
 
 	params = {'msg': message, 'data': names }
-	return render(request,'page2.html', params)
+	return render(request,'community_article.html', params)
 
 
 def create_groups(request):
@@ -229,7 +229,7 @@ def create_groups(request):
 		message = 'No new groups were created yesterday'
 	
 	params = {'msg': message , 'data': names}
-	return render(request,'page3.html', params)
+	return render(request,'group.html', params)
 
 def create_community_resources(request):
 	data = get_community_articles(request)
@@ -291,7 +291,7 @@ def create_community_resources(request):
 		msg = 'No new Community Articles were created yesterday'	
 	
 	params = {'msg': message, 'data': names }
-	return render(request,'page4.html', params)
+	return render(request,'group_article.html', params)
 
 
 
