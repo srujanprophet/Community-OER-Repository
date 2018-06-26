@@ -118,21 +118,21 @@ def logout(request):
 ############### DSPACE DASHBOARD ###########################
 
 def create_collection(request, collection, community, jar, k):
-	#Getting of all Communities
+	# Getting all Communities
 	if k==0:	
 		url = 'http://127.0.0.1:80/rest/communities/top-communities'
 	else:
 		url = 'http://127.0.0.1:80/rest/communities'		
 	r = requests.get(url, headers = {'Content-Type': 'application/json'})
         
-	#Getting the uuid of a community
+	# Getting the uuid of a community
 	community_name = collection
 	for i in r.json():
 		if community_name and i['name']:
 			uuid=i['uuid']
 			exit			
 	
-	#Creation of Collection
+	# Creating Collection
 	url = 'http://127.0.0.1:80/rest/communities/' + uuid + '/collections'
 	head = {'Content-Type': 'application/json'}
 		
@@ -146,20 +146,20 @@ def create_collection(request, collection, community, jar, k):
 
 
 def create_community(request):        
-	#login funcion calling
+	# logging in
 	sessionid = login(request)
 	names = []
 	message = 'Communities Created : \n'
 
 	if sessionid != 500:
-		#User Successfully Login to the System
-		#Community POST
+		# User Successfully Logged into the System
+		# Community POST
 		url = 'http://127.0.0.1:80/rest/communities'
 		head = {'Content-Type': 'application/json'}
 		jar = requests.cookies.RequestsCookieJar()
 		jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/communities')
 		k=100
-		#Getting all the Communities from CC
+		# Getting all the Communities from CC
 		data = get_communities(request)
 
 		if data != 0:
@@ -178,7 +178,7 @@ def create_community(request):
 						k=100				
 						message = 'Error in Community Creation'
 				k=100			
-			#logout
+			# logging out
 			logout(request)
 
 		else:
@@ -196,17 +196,17 @@ def create_groups(request):
 	if data!=0:
 		for item in data:
 			names.append(item['name'])
-		#login funcion calling
+		# logging in
 		sessionid = login(request)
 		if sessionid != 500:
-			#Getting of all Communities
+			# Getting all Communities
 			url = 'http://127.0.0.1:80/rest/communities/top-communities'
 			r = requests.get(url, headers = {'Content-Type': 'application/json'})
 			for group in data:
-				#Getting the uuid of a community
-				community_name = group['communityname'] #*****************
+				# Getting the uuid of a community
+				cname = group['community_name'] 
 				for i in r.json():
-					if community_name==i['name']:
+					if cname == i['name']:
 						uuid=i['uuid']
 						exit
 				if uuid:
@@ -214,15 +214,15 @@ def create_groups(request):
 					jar = requests.cookies.RequestsCookieJar()
 					jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/communities')
 					content={ "name": group['name'], "copyrightText": "", "introductoryText": "Welcome to the Sport Club", "shortDescription": "This", "sidebarText": ""}
-					req = requests.post(url, headers={'Content-Type': 'application/json'}, json = content, cookies = jar)				#*********
+					req = requests.post(url, headers={'Content-Type': 'application/json'}, json = content, cookies = jar)		
 					if req.status_code==200:
 						message += 'Group is Created in DSpace'
-						#**************
+						
 						create_collection(request,group['name'],content,jar,1)
 					else: 
 						message = 'Error in Group Creation in DSpace'
 		if sessionid != 500:
-			#logout
+			# logging out
 			logout(request)
 
 	else:
@@ -239,20 +239,20 @@ def create_community_resources(request):
 	if data!=0: 
 		for item in data:
 			names.append(item['title'])
-		#login funcion calling
+		# logging in 
 		sessionid = login(request)
 		if sessionid != 500:
-			#Getting of all Collections
+			# Getting all Collections
 			url = 'http://127.0.0.1:80/rest/collections'
 			r = requests.get(url, headers = {'Content-Type': 'application/json'})
 			for name in data:			        
-				#Getting the uuid of a collection
+				# Getting the uuid of a collection
 				collection_name = name['communityname']
 				for i in r.json():
 					if collection_name == i['name']:
 						uuid=i['uuid']
 						exit
-				#Addition of an item in a collection
+				# Addition of an item to a collection
 				if uuid != 0:	
 					url = 'http://127.0.0.1:80/rest/collections/' + uuid + '/items'
 					item = {"metadata":[
@@ -284,7 +284,7 @@ def create_community_resources(request):
 					else: 
 						message = 'Error in Item and File POSTing to DSpace'
 		if sessionid!=500:
-			#logout
+			# logging out
 			logout(request)
 
 	else:
@@ -303,20 +303,20 @@ def create_group_resources(request):
 	if data!=0: 
 		for item in data:
 			names.append(item['title'])
-		#login funcion calling
+		# logging in
 		sessionid = login(request)
 		if sessionid != 500:
-			#Getting of all Collections
+			# Getting all Collections
 			url = 'http://127.0.0.1:80/rest/collections'
 			r = requests.get(url, headers = {'Content-Type': 'application/json'})
 			for name in data:			        
-				#Getting the uuid of a collection
+				# Getting the uuid of a collection
 				collection_name = name['groupname']
 				for i in r.json():
 					if collection_name == i['name']:
 						uuid=i['uuid']
 						exit
-				#Addition of an item in a collection
+				# Addition of an item to a collection
 				if uuid != 0:	
 					url = 'http://127.0.0.1:80/rest/collections/' + uuid + '/items'
 					item = {"metadata":[
@@ -348,7 +348,7 @@ def create_group_resources(request):
 					else: 
 						message += 'Error in Item and File POSTing to DSpace'
 		if sessionid!=500:
-			#logout
+			# logging out
 			logout(request)	
 	else:
 		msg = 'No New Group Articles were published yesterday.'
@@ -360,19 +360,19 @@ def create_group_resources(request):
 
 def create_group_bitstream(request, title, name, sessionid):	
 	
-	#Getting of all Items
+	# Getting all Items
 	url = 'http://127.0.0.1:80/rest/items'
 	r = requests.get(url, headers={'Content-Type': 'application/json'})
         
 	
-	#Getting the uuid of a Item
+	# Getting the uuid of a Item
 	item_name=title
 	for i in r.json():
 		if (item_name and i['name']):
 			uuid=i['uuid']
 			exit
 
-	#Addition of an Bitstream in a item
+	# Addition of a Bitstream to an item
 	url = 'http://127.0.0.1:80/rest/items/' + uuid + '/bitstreams'
 	filename = str(name['groupname']) + str(name['articleid']) + '.pdf'	
 	data = {"name": filename, "description": ""}
@@ -381,7 +381,7 @@ def create_group_bitstream(request, title, name, sessionid):
 	jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/items')
 				
 	temp = get_grouparticle_pdf(request, name)
-	files = {'file': open('cache/community'+ str(name['articleid']) +'.pdf', 'rb')}
+	files = {'file': open('cache/group'+ str(name['articleid']) +'.pdf', 'rb')}
 	
 	req = requests.post(url, files=files, headers={'Content-Type': 'application/json'}, params=data, cookies = jar)
 	if req.status_code==200:
@@ -406,19 +406,19 @@ def get_grouparticle_pdf(request, name):
 
 def create_bitstream(request, title, name, sessionid):	
 	
-	#Getting of all Items
+	# Getting of all Items
 	url = 'http://127.0.0.1:80/rest/items'
 	r = requests.get(url, headers={'Content-Type': 'application/json'})
         
 	
-	#Getting the uuid of a Item
+	# Getting the uuid of an Item
 	item_name=title
 	for i in r.json():
 		if (item_name and i['name']):
 			uuid=i['uuid']
 			exit
 
-	#Addition of an Bitstream in a item
+	# Addition of a Bitstream to an item
 	url = 'http://127.0.0.1:80/rest/items/' + uuid + '/bitstreams'
 	filename = str(name['communityname']) + str(name['articleid']) + '.pdf'	
 	data = {"name": filename, "description": ""}
