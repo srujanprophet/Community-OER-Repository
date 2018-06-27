@@ -27,13 +27,19 @@
         <!-- Page Content -->
         <div id="page-content-wrapper">
             <div class="container-fluid" style="margin-top: 150px">
-                <h1>{{ msg }}</h1>
-                {% for name in data %}
+                {% if success_flag %}
+                	<h2 id = 'results'>Success</h2>
+                {% else %}
+                	<h2 id = 'results'>Failed</h2>
+                {% endif%}
+                <hr>
+                <a href="{% url 'createCommunityArticle' %}" class="btn btn-dark btn-lg" id="create_community_articles">Check for Community Articles</a><br><br><hr>
+                <h3>{{ msg }}</h3>
+                <h4>Communities Created in DSpace</h4>
+               	{% for name in data %}
                     <p><strong>{{ name }}</h5><p></strong>
                 {% endfor %}
-                <hr>
-                <a href="{% url 'createCommunityArticle' %}" class="btn btn-dark btn-lg">Check for Community Articles</a><br><br>
-                <!--<a href="#menu-toggle" id="menu-toggle" class="btn btn-dark btn-lg" >Menu</a>-->
+                
             </div>
         </div>
         <!-- /#page-content-wrapper -->

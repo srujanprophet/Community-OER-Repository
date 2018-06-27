@@ -26,12 +26,21 @@
         <!-- Page Content -->
         <div id="page-content-wrapper">
             <div class="container-fluid" style="margin-top: 150px">
-                <h1>{{ msg }}</h1>
+                {% if success_flag %}
+                	<h2 id ='results'>Success</h2>
+                {% else %}
+                	<h2 id ='results'>Fail</h2>
+                {% endif%}
+                
+                
+                <hr><a href="{% url 'homepage' %}" class="btn btn-dark btn-lg" id ="home">Home</a><br><br>
+                <br>
+                <h3>{{ msg }}</h3>
+                 <h4>Group Articles Created in DSpace</h4>
                 {% for name in data %}
                     <p><strong>{{ name }}</h5><p></strong>
                 {% endfor %}
-                <hr><a href="http://localhost:8000/" class="btn btn-dark btn-lg">Home</a><br><br>
-                <!--<a href="#menu-toggle" id="menu-toggle" class="btn btn-dark btn-lg" >Menu</a>-->
+                
             </div>
         </div>
         <!-- /#page-content-wrapper -->

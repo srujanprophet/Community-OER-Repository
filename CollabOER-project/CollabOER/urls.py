@@ -14,29 +14,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.conf.urls import url
 from . import views
 from converter import views as converter_views
 
 urlpatterns = [
-	path('',views.homepage,name="home"),
-	#path('logindash/',views.logindash,name="logindashboard"),
-	#path('CC/',views.ccDashboard,name="ccdashboard"),
-	#path('dspace/',views.dspaceDashboard, name="dspacedashboard"),
+	url(r'^$',views.homepage,name="homepage"),
+	
+	url(r'^createcommunity/',views.create_community,name="createCommunity"),
+	url(r'^createcommunityarticles/',views.create_community_resources,name="createCommunityArticle"),
+	url(r'^creategroup/',views.create_groups,name="createGroup"),
+	url(r'^creategrouparticles/',views.create_group_resources,name="createGroupArticle"),
 
-	#path('getcommunity/',views.get_communities, name="getCommunity"),
-	#path('getcommunityarticles/',views.get_community_articles, name="getCommunityArticles"),
-	#path('getgroup/',views.get_groups, name="getGroup"),
-	#path('getgrouparticles/',views.get_group_articles, name="getGroupArticles"),
-
-	#path('login/',views.login, name="login"),
-	#path('logout/',views.logout,name="logout"),
-
-	path('createcommunity/',views.create_community,name="createCommunity"),
-	path('createcommunityarticles/',views.create_community_resources,name="createCommunityArticle"),
-	path('creategroup/',views.create_groups,name="createGroup"),
-	path('creategrouparticles/',views.create_group_resources,name="createGroupArticle"),
-
-	path('render/pdf/',converter_views.Pdf.as_view(), name="convert"),
-    path('admin/', admin.site.urls),
+	url(r'^render/pdf/',converter_views.Pdf.as_view(), name="convert"),
+    url(r'^admin/', admin.site.urls),
 ]
