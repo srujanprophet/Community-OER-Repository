@@ -40,8 +40,9 @@ The App Contains 4 pages :
 2. Then, checks for any community articles created, if yes, then adds them to DSpace.
 3. Then, checks for any groups created, if yes, then create the same in DSpace.
 4. Lastly, check for group articles, if yes, then add to DSpace.
-
+<center>
 ![Giphy is down](https://media.giphy.com/media/cJfSDmX4A0DmIJsQjA/giphy.gif)
+</center>
 ---
 - [More on DSpace](https://wiki.duraspace.org/display/DSDOC6x/DSpace+6.x+Documentation)
 - [Collaborative Communities](https://github.com/fresearchgroup/Collaboration-System)
