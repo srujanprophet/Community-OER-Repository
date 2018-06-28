@@ -36,11 +36,13 @@
                 <hr><a href="{% url 'homepage' %}" class="btn btn-dark btn-lg" id ="home">Home</a><br><br>
                 <br>
                 <h3>{{ msg }}</h3>
-                 <h4>Group Articles Created in DSpace</h4>
-                {% for name in data %}
-                    <p><strong>{{ name }}</h5><p></strong>
-                {% endfor %}
+                {% if data %}
+                    <h4>Group Articles Created in DSpace</h4>
                 
+                    {% for name in data %}
+                        <p><strong>{{ name }}</h5><p></strong>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
         <!-- /#page-content-wrapper -->

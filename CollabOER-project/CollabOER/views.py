@@ -5,6 +5,7 @@ from converter.render import Render
 from random import *
 from decimal import Decimal
 
+from .config import *
 import requests
 
 
@@ -15,7 +16,7 @@ def homepage(request):
 ############# CC DASHBOARD ###############
 
 def get_communities(request):
-	r = requests.get('http://localhost:8000/api/dspace/communityapi/')
+	r = requests.get(URL1+'/api/dspace/communityapi/')
 	data = r.json()	
 
 	if (r.status_code==200 and data):	
@@ -30,7 +31,7 @@ def get_communities(request):
 	
 
 def get_community_articles(request):
-	r = requests.get('http://localhost:8000/api/dspace/communityarticlesapi/')
+	r = requests.get(URL1+'/api/dspace/communityarticlesapi/')
 	data = r.json()
 	
 
@@ -50,7 +51,7 @@ def get_community_articles(request):
 
 
 def get_groups(request):
-	r = requests.get('http://localhost:8000/api/dspace/groupapi/')	
+	r = requests.get(URL1+'/api/dspace/groupapi/')	
 	data = r.json()
 
 	if (r.status_code==200  and data):	
@@ -67,7 +68,7 @@ def get_groups(request):
 	#return render(request,'ccredirect.html', params)
 
 def get_group_articles(request):
-	r = requests.get('http://localhost:8000/api/dspace/grouparticlesapi/')	
+	r = requests.get(URL1+'/api/dspace/grouparticlesapi/')	
 	data = r.json()
 
 	if (r.status_code==200 and data):	
@@ -88,8 +89,8 @@ def get_group_articles(request):
 
 def login(request):
 
-	url = 'http://127.0.0.1:80/rest/login'
-	head = {'email': 'durgeshbarwal@gmail.com', 'password': '1773298936'}	
+	url = URL2+'/rest/login'
+	head = {'email': USERNAME, 'password': PASSWORD}	
 	r = requests.post(url, data=head)
 	sessionid = r.cookies['JSESSIONID']
 	if r.status_code==200:
@@ -100,7 +101,7 @@ def login(request):
 	return sessionid
 	
 def logout(request):
-	url = 'http://127.0.0.1:80/rest/logout'
+	url = URL2+'/rest/logout'
 	r = requests.post(url)
 	if r.status_code==200:
 		message = 'User Successfully Logged out from the DSpace System.'
@@ -114,9 +115,9 @@ def logout(request):
 def create_collection(request, collection, community, jar, k):
 	# Getting all Communities
 	if k==0:	
-		url = 'http://127.0.0.1:80/rest/communities/top-communities'
+		url = URL2 + '/rest/communities/top-communities'
 	else:
-		url = 'http://127.0.0.1:80/rest/communities'		
+		url = URL2 + URL2  +  '/rest/communities'		
 	r = requests.get(url, headers = {'Content-Type': 'application/json'})
         
 	# Getting the uuid of a community
@@ -126,7 +127,7 @@ def create_collection(request, collection, community, jar, k):
 			uuid=i['uuid']
 			exit			
 	# Creating Collection
-	url = 'http://127.0.0.1:80/rest/communities/' + uuid + '/collections'
+	url = URL2 + '/rest/communities/' + uuid + '/collections'
 	head = {'Content-Type': 'application/json'}
 		
 	r = requests.post(url, headers=head, json=community, cookies = jar)
@@ -148,10 +149,10 @@ def create_community(request):
 	if sessionid != 500:
 		# User Successfully Logged into the System
 		# Community POST
-		url = 'http://127.0.0.1:80/rest/communities'
+		url = URL2 + '/rest/communities'
 		head = {'Content-Type': 'application/json'}
 		jar = requests.cookies.RequestsCookieJar()
-		jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/communities')
+		jar.set('JSESSIONID', sessionid, domain=DOMAIN2, path='/rest/communities')
 		k=100
 		# Getting all the Communities from CC
 		count=0
@@ -194,7 +195,7 @@ def create_groups(request):
 		sessionid = login(request)
 		if sessionid != 500:
 			# Getting all Communities
-			url = 'http://127.0.0.1:80/rest/communities/top-communities'
+			url = URL2 + '/rest/communities/top-communities'
 			r = requests.get(url, headers = {'Content-Type': 'application/json'})
 			count=0
 			count_community=0;count_collection=0
@@ -207,9 +208,9 @@ def create_groups(request):
 						uuid=i['uuid']
 						exit
 				
-				url = 'http://127.0.0.1:80/rest/communities/' + uuid + '/communities'
+				url = URL2 + '/rest/communities/' + uuid + '/communities'
 				jar = requests.cookies.RequestsCookieJar()
-				jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/communities')
+				jar.set('JSESSIONID', sessionid, domain = DOMAIN2, path='/rest/communities')
 				content={ "name": group['name'], "copyrightText": "", "introductoryText": "Welcome to the Sport Club", "shortDescription": "This", "sidebarText": ""}
 				req = requests.post(url, headers={'Content-Type': 'application/json'}, json = content, cookies = jar)		
 				if req.status_code==200:
@@ -248,7 +249,7 @@ def create_community_resources(request):
 		sessionid = login(request)
 		if sessionid != 500:
 			# Getting all Collections
-			url = 'http://127.0.0.1:80/rest/collections'
+			url = URL2 + '/rest/collections'
 			r = requests.get(url, headers = {'Content-Type': 'application/json'})
 			count=0
 			count_item=0;count_bitstream=0
@@ -263,7 +264,7 @@ def create_community_resources(request):
 						uuid=i['uuid']
 						exit
 				# Addition of an item to a collection
-				url = 'http://127.0.0.1:80/rest/collections/' + uuid + '/items'
+				url = URL2 + '/rest/collections/' + uuid + '/items'
 				item = {"metadata":[
 							{
 							"key": "dc.contributor.author",
@@ -285,7 +286,7 @@ def create_community_resources(request):
 							"language": "en_US"
 							}]}
 				jar = requests.cookies.RequestsCookieJar()
-				jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/collections')
+				jar.set('JSESSIONID', sessionid, domain=DOMAIN2, path='/rest/collections')
 				req = requests.post(url, headers={'Content-Type': 'application/json'}, json=item, cookies = jar)
 				if req.status_code==200:
 					message = 'Item is Created Successfully in DSpace'
@@ -316,9 +317,6 @@ def create_group_resources(request):
 	data, message = get_group_articles(request)
 	#message = 'Group Articles Created : \n'
 	names = []
-				
-	
-
 	if data!=0: 
 		for item in data:
 			names.append(item['title'])
@@ -327,7 +325,7 @@ def create_group_resources(request):
 		sessionid = login(request)
 		if sessionid != 500:
 			# Getting all Collections
-			url = 'http://127.0.0.1:80/rest/collections'
+			url = URL2 + '/rest/collections'
 			r = requests.get(url, headers = {'Content-Type': 'application/json'})
 			count=0
 			count_item=0;count_bitstream=0
@@ -343,7 +341,7 @@ def create_group_resources(request):
 						exit
 				# Addition of an item to a collection
 				if uuid != 0:	
-					url = 'http://127.0.0.1:80/rest/collections/' + uuid + '/items'
+					url = URL2  +  '/rest/collections/' + uuid + '/items'
 					item = {"metadata":[
 							{
 							"key": "dc.contributor.author",
@@ -365,7 +363,7 @@ def create_group_resources(request):
 							"language": "en_US"
 							}]}
 					jar = requests.cookies.RequestsCookieJar()
-					jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/collections')
+					jar.set('JSESSIONID', sessionid, domain=DOMAIN2, path='/rest/collections')
 					req = requests.post(url, headers={'Content-Type': 'application/json'}, json=item, cookies = jar)
 					if req.status_code==200:
 						message = 'Item is Created Successfully in DSpace'
@@ -395,7 +393,7 @@ def create_group_resources(request):
 def create_group_bitstream(request, title, name, sessionid):	
 	
 	# Getting all Items
-	url = 'http://127.0.0.1:80/rest/items'
+	url = URL2  +  '/rest/items'
 	r = requests.get(url, headers={'Content-Type': 'application/json'})
         
 	# Getting the uuid of a Item
@@ -405,12 +403,12 @@ def create_group_bitstream(request, title, name, sessionid):
 			uuid=i['uuid']
 			exit
 	# Addition of a Bitstream to an item
-	url = 'http://127.0.0.1:80/rest/items/' + uuid + '/bitstreams'
+	url = URL2  +  '/rest/items/' + uuid + '/bitstreams'
 	filename = str(name['groupname']) + str(name['articleid']) + '.pdf'	
 	data = {"name": filename, "description": ""}
 	
 	jar = requests.cookies.RequestsCookieJar()
-	jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/items')
+	jar.set('JSESSIONID', sessionid, domain=DOMAIN2, path='/rest/items')
 				
 	temp = get_grouparticle_pdf(request, name)
 	files = {'file': open('cache/group'+ str(name['articleid']) +'.pdf', 'rb')}
@@ -447,7 +445,7 @@ def get_grouparticle_pdf(request, name):
 def create_bitstream(request, title, name, sessionid):	
 	
 	# Getting of all Items
-	url = 'http://127.0.0.1:80/rest/items'
+	url = URL2  +  '/rest/items'
 	r = requests.get(url, headers={'Content-Type': 'application/json'})
         
 	# Getting the uuid of an Item
@@ -458,12 +456,12 @@ def create_bitstream(request, title, name, sessionid):
 			exit
 
 	# Addition of a Bitstream to an item
-	url = 'http://127.0.0.1:80/rest/items/' + uuid + '/bitstreams'
+	url = URL2  +  '/rest/items/' + uuid + '/bitstreams'
 	filename = str(name['communityname']) + str(name['articleid']) + '.pdf'	
 	data = {"name": filename, "description": ""}
 	
 	jar = requests.cookies.RequestsCookieJar()
-	jar.set('JSESSIONID', sessionid, domain='127.0.0.1', path='/rest/items')
+	jar.set('JSESSIONID', sessionid, domain=DOMAIN2, path='/rest/items')
 				
 	temp = getpdf(request, name)
 	files = {'file': open('cache/community'+ str(name['articleid']) +'.pdf', 'rb')}

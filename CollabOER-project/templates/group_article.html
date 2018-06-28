@@ -37,11 +37,12 @@
                 
                 <hr>
                  <h3>{{ msg }}</h3>
-                 <h4>Communities Articles Created in DSpace</h4>
-               	{% for name in data %}
-                    <p><strong>{{ name }}</h5><p></strong>
-                {% endfor %}
-                
+                 {% if data %}
+                    <h4>Community Articles Created in DSpace</h4>
+               	    {% for name in data %}
+                        <p><strong>{{ name }}</h5><p></strong>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
         <!-- /#page-content-wrapper -->

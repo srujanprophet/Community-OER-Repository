@@ -35,11 +35,12 @@
                 <hr>
                 <a href="{% url 'createCommunityArticle' %}" class="btn btn-dark btn-lg" id="create_community_articles">Check for Community Articles</a><br><br><hr>
                 <h3>{{ msg }}</h3>
-                <h4>Communities Created in DSpace</h4>
-               	{% for name in data %}
-                    <p><strong>{{ name }}</h5><p></strong>
-                {% endfor %}
-                
+                {% if data %}
+                    <h4>Communities Created in DSpace</h4>
+               	    {% for name in data %}
+                        <p><strong>{{ name }}</h5><p></strong>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
         <!-- /#page-content-wrapper -->
